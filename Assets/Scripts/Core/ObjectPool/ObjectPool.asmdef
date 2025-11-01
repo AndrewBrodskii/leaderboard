@@ -1,0 +1,7 @@
+{
+  "name": "ObjectPool",
+  "references": [
+    "Factory",
+    "UniTask"
+  ]
+}
