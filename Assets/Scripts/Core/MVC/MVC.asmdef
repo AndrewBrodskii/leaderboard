@@ -1,0 +1,4 @@
+{
+  "name": "MVC",
+  "references":[ "ObjectPool" ]
+}
