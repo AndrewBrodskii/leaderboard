@@ -1,0 +1,4 @@
+{
+  "name": "DI",
+  "references":[ "ResourcesModul", "Factory", "ObjectPool" ]
+}
