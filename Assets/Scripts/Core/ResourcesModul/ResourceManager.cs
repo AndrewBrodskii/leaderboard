@@ -10,19 +10,31 @@ namespace ResourcesModul
     {
         private readonly Dictionary<string, Object> _cache = new();
 
-        public async UniTask<Object> LoadPrefabAsync<T>() where T : Object
+        public async UniTask<T> LoadPrefabAsync<T>() where T : Object
         {
             var key = typeof(T).Name;
             if(_cache.TryGetValue(key, out var obj))
-                return obj;
+                return obj as T;
 
             var operation = Addressables.LoadAssetAsync<Object>(key);
             await operation.Task;
 
-            if (operation.Status == AsyncOperationStatus.Succeeded)
+            if (operation.Status != AsyncOperationStatus.Succeeded)
             {
-                _cache.Add(key, operation.Result);
-                return operation.Result;
+                Debug.LogError($"Failed to load asset: {typeof(T)}");
+                return null;
+            }
+
+            if (operation.Result is not GameObject go)
+            {
+                _cache.Add(key, operation.Result as T);
+                return operation.Result as T;
+            }
+
+            if (go.TryGetComponent(out T component))
+            {
+                _cache.Add(key, component);
+                return component;
             }
             
             Debug.LogError($"Failed to load asset: {typeof(T)}");

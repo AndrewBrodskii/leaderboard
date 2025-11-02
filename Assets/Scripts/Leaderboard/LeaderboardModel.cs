@@ -9,11 +9,11 @@ namespace Leaderboard
 {
     public class LeaderboardModel : IModel
     {
-        private const int MockDataSize = 50;
+        private const int MockDataSize = 15;
         private const string PlayerNickname = "BroDi";
         private const string DefaultNickname = "Player{0}";
 
-        public List<LeaderboardItemModel> MockDatas { get; private set; } = new();
+        public List<LeaderboardItemModel> MockDatas { get; private set; } = new(MockDataSize);
         public LeaderboardPlayerItemView PlayerItemView { get; private set; }
 
         private readonly LeaderboardSettings _settings;
@@ -30,10 +30,10 @@ namespace Leaderboard
         private void CreateMockData()
         {
             var scores = GetRandomScores();
-            MockDatas.Add(new LeaderboardItemModel(true, PlayerNickname, $"{scores[0]}", null));
+            MockDatas.Add(new LeaderboardItemModel(true, PlayerNickname, scores[0], null));
             for (var i = 1; i < MockDataSize; i++)
             {
-                MockDatas.Add(new LeaderboardItemModel(false,string.Format(DefaultNickname, i), $"{scores[i]}", null));
+                MockDatas.Add(new LeaderboardItemModel(false,string.Format(DefaultNickname, i), scores[i], null));
             }
 
             MockDatas = MockDatas.OrderBy(x => x.Score).ToList();

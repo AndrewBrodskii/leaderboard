@@ -15,12 +15,14 @@ namespace Menu
         
         private IObjectPool _objectPool;
         private IResourcesManager _resourcesManager;
+        private LeaderboardSettings _leaderboardSettings;
 
         private void Start()
         {
             _objectPool = DiContainer.Instance.Get<IObjectPool>();
             _resourcesManager = DiContainer.Instance.Get<IResourcesManager>();
             _leaderboardButton.onClick.AddListener(OnLeaderboardButtonClicked);
+            InitializeAsync().Forget();
         }
 
         private void OnDestroy()
@@ -28,17 +30,21 @@ namespace Menu
             _leaderboardButton.onClick.RemoveListener(OnLeaderboardButtonClicked);
         }
 
+        private async UniTask InitializeAsync()
+        {
+            _leaderboardSettings = await _resourcesManager.LoadPrefabAsync<LeaderboardSettings>();
+        }
+
         private void OnLeaderboardButtonClicked()
         {
             ShowLeaderboard().Forget();
         }
 
-        private async UniTaskVoid ShowLeaderboard()
+        private async UniTask ShowLeaderboard()
         {
-            var settings = await _resourcesManager.LoadPrefabAsync<LeaderboardSettings>() as LeaderboardSettings;
             var leaderboardView = await _objectPool.GetAsync<LeaderboardView>(_popupContainerTransform);
-            var leaderboardController = new LeaderboardController(leaderboardView, new LeaderboardModel(settings));
-            leaderboardController.ShowLeaderboardAsync().Forget();
+            var leaderboardController = new LeaderboardController(leaderboardView, new LeaderboardModel(_leaderboardSettings));
+            await leaderboardController.ShowLeaderboardAsync();
         }
     }
 }

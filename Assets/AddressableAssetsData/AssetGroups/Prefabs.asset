@@ -20,17 +20,20 @@ MonoBehaviour:
   - m_GUID: 9e95324d8456b4633ba8af2a3f090723
     m_Address: LeaderboardView
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - default
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bbe9c6350f08a46b4a4bd96f2eacb047
     m_Address: LeaderboardItemView
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - default
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: da5095c9abf5c4d8c97c06ee239ac5df
     m_Address: LeaderboardPlayerItemView
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - default
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0ced3e45818ce44d4a9d90377c98fae4, type: 2}

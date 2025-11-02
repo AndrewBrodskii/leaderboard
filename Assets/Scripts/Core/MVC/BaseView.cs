@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using ObjectPool;
 using UnityEngine;
 
@@ -15,10 +16,10 @@ namespace MVC
             Model = model;
         }
 
-        public void Show()
+        public async UniTask ShowAsync()
         {
             gameObject.SetActive(true);
-            OnShown();
+            await OnShownAsync();
         }
 
         public void Hide()
@@ -28,7 +29,7 @@ namespace MVC
             OnDeactivated?.Invoke(name, this);
         }
 
-        protected virtual void OnShown(){}
+        protected virtual async UniTask OnShownAsync(){}
         protected virtual void OnHidden(){}
     }
 }

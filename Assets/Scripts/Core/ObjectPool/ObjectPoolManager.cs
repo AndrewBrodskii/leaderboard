@@ -9,11 +9,13 @@ namespace ObjectPool
     {
         private readonly Dictionary<string, Queue<MonoBehaviour>> _objectContainer;
         private readonly IFactory _factory;
+        private readonly Transform _objectPoolTransform;
 
-        public ObjectPoolManager(IFactory factory)
+        public ObjectPoolManager(IFactory factory, Transform objectPoolTransform)
         {
             _objectContainer = new Dictionary<string, Queue<MonoBehaviour>>();
             _factory = factory;
+            _objectPoolTransform = objectPoolTransform;
         }
 
         public async UniTask<T> GetAsync<T>(Transform parent) where T : MonoBehaviour, IPoolable
@@ -43,6 +45,7 @@ namespace ObjectPool
             }
 
             _objectContainer[objectType].Enqueue(pooledObj);
+            pooledObj.transform.SetParent(_objectPoolTransform, false);
         }
     }
 }

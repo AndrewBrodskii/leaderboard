@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using MVC;
 using TMPro;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Leaderboard.Item
         [SerializeField] private TMP_Text nicknameText;
         [SerializeField] private TMP_Text scoreText;
 
-        protected override void OnShown()
+        protected override async UniTask OnShownAsync()
         {
             avatar.sprite = Model.Avatar;
             placeText.text = $"{Model.Place}";

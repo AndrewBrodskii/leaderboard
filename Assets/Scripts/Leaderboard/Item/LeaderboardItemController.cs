@@ -10,7 +10,7 @@ namespace Leaderboard.Item
 
         public void Show()
         {
-            View.Show();
+            View.ShowAsync();
         }
 
         public void Hide()

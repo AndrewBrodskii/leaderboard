@@ -6,13 +6,13 @@ namespace Leaderboard.Item
     public class LeaderboardItemModel : IModel
     {
         public int Place { get; private set; }
-        public string Score { get; private set; }//сделать инт
+        public int Score { get; private set; }
         public Sprite Avatar { get; private set; }
 
         public readonly bool IsPlayer;
         public readonly string Nickname;
 
-        public LeaderboardItemModel(bool isPlayer, string nickname, string score, Sprite avatar)
+        public LeaderboardItemModel(bool isPlayer, string nickname, int score, Sprite avatar)
         {
             IsPlayer = isPlayer;
             Nickname = nickname;

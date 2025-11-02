@@ -20,7 +20,7 @@ namespace Factory
 
         public async UniTask<T> CreateGameObjectAsync<T>(Transform parent) where T : MonoBehaviour
         {
-            var prefab = await _resourceManager.LoadPrefabAsync<T>() as GameObject;
+            var prefab = await _resourceManager.LoadPrefabAsync<T>();
             var go = Object.Instantiate(prefab, parent);
             go.name = typeof(T).Name;
             go.transform.SetParent(parent);

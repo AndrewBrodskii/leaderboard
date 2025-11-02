@@ -1,7 +1,6 @@
 {
   "name": "Factory",
   "references": [
-    "Resources",
     "UniTask",
     "ResourcesModul"
   ]
