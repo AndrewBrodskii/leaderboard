@@ -24,7 +24,7 @@ MonoBehaviour:
     - default
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 09711ce710b94d0fabc8dd15f544568b
-    m_Address: LeaderboardMockData
+    m_Address: LeaderboardData
     m_ReadOnly: 0
     m_SerializedLabels:
     - default

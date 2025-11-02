@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DI;
+using Leaderboard.Data;
 using Leaderboard.Item;
 using Leaderboard.Item.PlayerItem;
 using MVC;
 using ObjectPool;
+using ResourcesModul;
 using UnityEngine;
 
 namespace Leaderboard
@@ -13,18 +15,22 @@ namespace Leaderboard
     {
         private readonly IObjectPool _objectPool;
         private readonly List<LeaderboardItemController> _leaderboardItemControllers = new();
+        private readonly IResourcesManager _resourcesManager;
+        
+        private LeaderboardData _leaderboardData;
 
         public LeaderboardController(LeaderboardView view, LeaderboardModel model) : base(view, model)
         {
             _objectPool = DiContainer.Instance.Get<IObjectPool>();
+            _resourcesManager = DiContainer.Instance.Get<IResourcesManager>();
         }
 
         public async UniTask ShowLeaderboardAsync()
         {
             View.CloseButtonClicked += OnCloseButtonClicked;
 
+            _leaderboardData = await _resourcesManager.LoadJsonAsync<LeaderboardData>();
             LeaderboardItemModel leaderboardPlayerItemModel = null;
-
             foreach (var leaderboardItemModel in Model.MockDatas)
             {
                 if (leaderboardItemModel.IsPlayer)

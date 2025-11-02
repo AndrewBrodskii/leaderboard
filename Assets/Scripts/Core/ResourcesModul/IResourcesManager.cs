@@ -6,6 +6,7 @@ namespace ResourcesModul
     public interface IResourcesManager
     {
         UniTask<T> LoadPrefabAsync<T>() where T : Object;
+        UniTask<T> LoadJsonAsync<T>() where T : class;
         void Release<T>();
         void ClearCache();//todo add to ICacheOwner interface
     }

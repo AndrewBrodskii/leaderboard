@@ -26,7 +26,7 @@ namespace DI
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            Register<IResourcesManager>(new ResourceManager());
+            Register<IResourcesManager>(new ResourcesManager());
             Register<IFactory>(new FactoryManager(Get<IResourcesManager>()));
             Register<IObjectPool>(new ObjectPoolManager(Get<IFactory>(), _objectPoolTransform));
         }

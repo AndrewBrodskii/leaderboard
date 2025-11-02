@@ -1,12 +1,14 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Object = UnityEngine.Object;
 
 namespace ResourcesModul
 {
-    public class ResourceManager : IResourcesManager
+    public class ResourcesManager : IResourcesManager
     {
         private readonly Dictionary<string, Object> _cache = new();
 
@@ -39,6 +41,40 @@ namespace ResourcesModul
             
             Debug.LogError($"Failed to load asset: {typeof(T)}");
             return null;
+        }
+        
+        public async UniTask<T> LoadJsonAsync<T>() where T : class
+        {
+            var key = typeof(T).Name;
+            var operation = Addressables.LoadAssetAsync<TextAsset>(key);
+            await operation.Task;
+
+            if (operation.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogError($"❌ Failed to load JSON asset: {key}");
+                return null;
+            }
+
+            var textAsset = operation.Result;
+            if (textAsset == null)
+            {
+                Debug.LogError($"❌ JSON asset is null: {key}");
+                return null;
+            }
+
+            try
+            {
+                var data = JsonUtility.FromJson<T>(textAsset.text);
+                if (data == null)
+                    Debug.LogError($"⚠️ Failed to parse JSON for type {typeof(T)}");
+
+                return data;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"⚠️ Exception parsing JSON: {e}");
+                return null;
+            }
         }
         
         public void ClearCache()
