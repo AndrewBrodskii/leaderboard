@@ -16,6 +16,7 @@ namespace Leaderboard.Item
         [SerializeField] private TMP_Text scoreText;
         
         private CancellationTokenSource _cts;
+        private Sprite _defaultSprite;
 
         public void SetAvatarSprite(Sprite sprite)
         {
@@ -26,6 +27,7 @@ namespace Leaderboard.Item
 
         protected override async UniTask OnShownAsync()
         {
+            _defaultSprite = avatar.sprite;
             placeText.text = $"{Model.Place}";
             nicknameText.text = Model.Nickname;
             scoreText.text = $"{Model.Score}";
@@ -38,6 +40,7 @@ namespace Leaderboard.Item
 
         protected override void OnHidden()
         {
+            avatar.sprite = _defaultSprite;
             _cts?.Cancel();
         }
         

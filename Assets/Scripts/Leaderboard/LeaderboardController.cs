@@ -43,8 +43,8 @@ namespace Leaderboard
             else
                 Debug.LogWarning("Player data not found");
             
-            await UniTask.WhenAll(_uniTasks);
             await View.ShowAsync();
+            await UniTask.WhenAll(_uniTasks);
         }
         
 
