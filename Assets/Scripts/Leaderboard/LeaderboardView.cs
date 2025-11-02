@@ -39,7 +39,12 @@ namespace Leaderboard
             _closeButton.onClick.RemoveAllListeners();
             _scrollRect.onValueChanged.RemoveListener(OnScrollChanged);
         }
-        
+
+        private void OnCloseButtonClicked()
+        {
+            CloseButtonClicked?.Invoke();
+        }
+
         private async UniTask CenterPlayerItemInContainerImmediate()
         {
             await UniTask.Yield();
@@ -58,29 +63,6 @@ namespace Leaderboard
             var anchored = content.anchoredPosition;
             anchored -= delta;
             content.anchoredPosition = anchored;
-            
-            await UniTask.Yield();
-        }
-
-        private void OnCloseButtonClicked() => CloseButtonClicked?.Invoke();
-
-        private void ScrollToCenter()
-        {
-            var content = _scrollRect.content;
-            var viewport = _scrollRect.viewport;
-            var playerItem = Model.PlayerItemView.RectTransform;
-
-            // Центр вьюпорта и айтема в локальных координатах контента
-            Vector2 viewportCenterLocalPos = content.InverseTransformPoint(viewport.TransformPoint(viewport.rect.center));
-            Vector2 itemCenterLocalPos = content.InverseTransformPoint(playerItem.TransformPoint(playerItem.rect.center));
-
-            // Смещение, необходимое для центрирования
-            float offsetY = itemCenterLocalPos.y - viewportCenterLocalPos.y;
-
-            // Применяем смещение
-            Vector2 anchoredPosition = content.anchoredPosition;
-            anchoredPosition.y += offsetY;
-            content.anchoredPosition = anchoredPosition;
         }
 
         private void OnScrollChanged(Vector2 normalizedPos)
