@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using Leaderboard.Data;
 using Leaderboard.Item;
 using Leaderboard.Item.PlayerItem;
 using MVC;
@@ -9,61 +9,45 @@ namespace Leaderboard
 {
     public class LeaderboardModel : IModel
     {
-        private const int MockDataSize = 15;
-        private const string PlayerNickname = "BroDi";
-        private const string DefaultNickname = "Player{0}";
+        private const string TestPlayerName = "Player 10";
 
-        public List<LeaderboardItemModel> MockDatas { get; private set; } = new(MockDataSize);
+        public List<LeaderboardItemModel> LeaderboardItemModels { get; } = new();
         public LeaderboardPlayerItemView PlayerItemView { get; private set; }
 
         private readonly LeaderboardSettings _settings;
+        private readonly LeaderboardData _leaderboardData;
 
-        public LeaderboardModel(LeaderboardSettings settings)
+        public LeaderboardModel(LeaderboardSettings settings, LeaderboardData leaderboardData)
         {
             _settings = settings;
+            _leaderboardData = leaderboardData;
             CreateMockData();
         }
-        
+
         public void SetPlayerItemView(LeaderboardPlayerItemView leaderboardPlayerItemView)
             => PlayerItemView = leaderboardPlayerItemView;
 
         private void CreateMockData()
         {
-            var scores = GetRandomScores();
-            MockDatas.Add(new LeaderboardItemModel(true, PlayerNickname, scores[0], null));
-            for (var i = 1; i < MockDataSize; i++)
+            var place = 1;
+            foreach (var itemData in _leaderboardData.leaderboard)
             {
-                MockDatas.Add(new LeaderboardItemModel(false,string.Format(DefaultNickname, i), scores[i], null));
-            }
-
-            MockDatas = MockDatas.OrderBy(x => x.Score).ToList();
-
-            for (var i = 0; i < MockDatas.Count; i++)
-            {
-                MockDatas[i].SetData(i + 1);
+                var isPlayer = itemData.name == TestPlayerName;
+                
+                LeaderboardItemModels.Add(
+                    new LeaderboardItemModel(isPlayer, itemData.name, itemData.score, place, itemData.avatar, GetItemColor(itemData.type)));
+                place++;
             }
         }
 
-        private List<int> GetRandomScores()
-        {
-            var scores = new List<int>();
-            for (var i = 0; i < MockDataSize; i++)
+        private Color GetItemColor(PlayerType playerType) =>
+            playerType switch
             {
-                scores.Add(Random.Range(0, 1000));
-            }
-
-            return scores;
-        }
-
-        private Color GetItemColor(int place) =>
-            place switch
-            {
-                1 => _settings.FirstPlaceColor,
-                2 => _settings.SecondPlaceColor,
-                3 => _settings.ThirdPlaceColor,
-                _ => place <= _settings.LeaderboardSize - _settings.BadPlacesCount
-                    ? _settings.UsualPlaceColor
-                    : _settings.BadPlaceColor
+                PlayerType.Diamond => _settings.DiamondColor,
+                PlayerType.Gold => _settings.GoldColor,
+                PlayerType.Silver => _settings.SilverColor,
+                PlayerType.Bronze => _settings.BronzeColor,
+                PlayerType.Default => _settings.DefaultColor
             };
     }
 }

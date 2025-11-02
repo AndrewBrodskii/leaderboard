@@ -3,6 +3,7 @@ using Leaderboard;
 using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
+using Leaderboard.Data;
 using ObjectPool;
 using ResourcesModul;
 
@@ -43,7 +44,8 @@ namespace Menu
         private async UniTask ShowLeaderboard()
         {
             var leaderboardView = await _objectPool.GetAsync<LeaderboardView>(_popupContainerTransform);
-            var leaderboardController = new LeaderboardController(leaderboardView, new LeaderboardModel(_leaderboardSettings));
+            var leaderboardData = await _resourcesManager.LoadJsonAsync<LeaderboardData>();
+            var leaderboardController = new LeaderboardController(leaderboardView, new LeaderboardModel(_leaderboardSettings, leaderboardData));
             await leaderboardController.ShowLeaderboardAsync();
         }
     }

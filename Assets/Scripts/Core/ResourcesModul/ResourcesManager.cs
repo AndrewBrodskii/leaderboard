@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Networking;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 
@@ -51,28 +53,50 @@ namespace ResourcesModul
 
             if (operation.Status != AsyncOperationStatus.Succeeded)
             {
-                Debug.LogError($"❌ Failed to load JSON asset: {key}");
+                Debug.LogError($"Failed to load JSON asset: {key}");
                 return null;
             }
 
             var textAsset = operation.Result;
             if (textAsset == null)
             {
-                Debug.LogError($"❌ JSON asset is null: {key}");
+                Debug.LogError($"JSON asset is null: {key}");
                 return null;
             }
 
             try
             {
-                var data = JsonUtility.FromJson<T>(textAsset.text);
+                var data = JsonConvert.DeserializeObject<T>(textAsset.text);
                 if (data == null)
-                    Debug.LogError($"⚠️ Failed to parse JSON for type {typeof(T)}");
+                    Debug.LogError($"Failed to parse JSON for type {typeof(T)}");
 
                 return data;
             }
             catch (Exception e)
             {
-                Debug.LogError($"⚠️ Exception parsing JSON: {e}");
+                Debug.LogError($"Exception parsing JSON: {e}");
+                return null;
+            }
+        }
+        
+        public async UniTask<Sprite> DownloadTextureAsync(string url)
+        {
+            using (var www = UnityWebRequestTexture.GetTexture(url))
+            {
+                await www.SendWebRequest();
+                if (www.result == UnityWebRequest.Result.Success)
+                {
+                    var texture = DownloadHandlerTexture.GetContent(www);
+                    var sprite = Sprite.Create(
+                        texture,
+                        new Rect(0, 0, texture.width, texture.height),
+                        new Vector2(0.5f, 0.5f)
+                    );
+                    
+                    return sprite;
+                }
+
+                Debug.LogError($"Failed to load avatar from {url}: {www.error}");
                 return null;
             }
         }

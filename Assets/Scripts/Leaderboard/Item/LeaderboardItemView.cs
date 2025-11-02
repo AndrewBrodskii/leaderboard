@@ -1,3 +1,4 @@
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using MVC;
 using TMPro;
@@ -9,20 +10,48 @@ namespace Leaderboard.Item
     public class LeaderboardItemView : BaseView<LeaderboardItemModel>
     {
         [SerializeField] private Image avatar;
+        [SerializeField] private Image playerType;
         [SerializeField] private TMP_Text placeText;
         [SerializeField] private TMP_Text nicknameText;
         [SerializeField] private TMP_Text scoreText;
+        
+        private CancellationTokenSource _cts;
+
+        public void SetAvatarSprite(Sprite sprite)
+        {
+            _cts.Cancel();
+            avatar.fillAmount = 1f;
+            avatar.sprite = sprite;
+        }
 
         protected override async UniTask OnShownAsync()
         {
-            avatar.sprite = Model.Avatar;
             placeText.text = $"{Model.Place}";
             nicknameText.text = Model.Nickname;
             scoreText.text = $"{Model.Score}";
+            playerType.color = Model.PlayerTypeColor;
+
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            AnimateFillAsync(_cts.Token).Forget();
         }
 
         protected override void OnHidden()
         {
+            _cts?.Cancel();
+        }
+        
+        private async UniTask AnimateFillAsync(CancellationToken token)
+        {
+            await UniTask.WaitUntil(() => avatar.isActiveAndEnabled, cancellationToken: token);
+            Debug.Log($"Animating {placeText.text}");
+            while (!token.IsCancellationRequested)
+            {
+                avatar.fillAmount += Time.deltaTime * 0.5f;
+                if (avatar.fillAmount >= 1f)
+                    avatar.fillAmount = 0f;
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            }
         }
     }
 }

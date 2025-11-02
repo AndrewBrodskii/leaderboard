@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DI;
-using Leaderboard.Data;
 using Leaderboard.Item;
 using Leaderboard.Item.PlayerItem;
 using MVC;
@@ -16,29 +15,26 @@ namespace Leaderboard
         private readonly IObjectPool _objectPool;
         private readonly List<LeaderboardItemController> _leaderboardItemControllers = new();
         private readonly IResourcesManager _resourcesManager;
-        
-        private LeaderboardData _leaderboardData;
+        private readonly List<UniTask> _uniTasks = new();
 
         public LeaderboardController(LeaderboardView view, LeaderboardModel model) : base(view, model)
         {
             _objectPool = DiContainer.Instance.Get<IObjectPool>();
-            _resourcesManager = DiContainer.Instance.Get<IResourcesManager>();
         }
 
         public async UniTask ShowLeaderboardAsync()
         {
             View.CloseButtonClicked += OnCloseButtonClicked;
-
-            _leaderboardData = await _resourcesManager.LoadJsonAsync<LeaderboardData>();
+            
             LeaderboardItemModel leaderboardPlayerItemModel = null;
-            foreach (var leaderboardItemModel in Model.MockDatas)
+            foreach (var leaderboardItemModel in Model.LeaderboardItemModels)
             {
                 if (leaderboardItemModel.IsPlayer)
                 {
                     leaderboardPlayerItemModel = leaderboardItemModel;
                     continue;
                 }
-
+            
                 await ShowItem(leaderboardItemModel);
             }
 
@@ -46,19 +42,19 @@ namespace Leaderboard
                 await ShowPlayerItem(leaderboardPlayerItemModel);
             else
                 Debug.LogWarning("Player data not found");
-
+            
+            await UniTask.WhenAll(_uniTasks);
             await View.ShowAsync();
         }
+        
 
         private async UniTask ShowItem(LeaderboardItemModel leaderboardItemModel)
         {
             var leaderboardItemView = await _objectPool.GetAsync<LeaderboardItemView>(View.ContentContainerTransform);
 
             var leaderboardItemController = new LeaderboardItemController(leaderboardItemView, leaderboardItemModel);
-            leaderboardItemController.Show();
+            _uniTasks.Add(leaderboardItemController.ShowAsync());
             _leaderboardItemControllers.Add(leaderboardItemController);
-
-            await UniTask.CompletedTask;
         }
 
         private async UniTask ShowPlayerItem(LeaderboardItemModel leaderboardItemModel)
@@ -66,10 +62,8 @@ namespace Leaderboard
             var leaderboardItemView = await CreatePlayerItems(leaderboardItemModel);
 
             var leaderboardItemController = new LeaderboardItemController(leaderboardItemView, leaderboardItemModel);
-            leaderboardItemController.Show();
+            _uniTasks.Add(leaderboardItemController.ShowAsync());
             _leaderboardItemControllers.Add(leaderboardItemController);
-
-            await UniTask.CompletedTask;
         }
 
         private async UniTask<LeaderboardPlayerItemView> CreatePlayerItems(LeaderboardItemModel leaderboardItemModel)
@@ -80,7 +74,7 @@ namespace Leaderboard
             var leaderboardItemViewTop = await _objectPool.GetAsync<LeaderboardPlayerItemView>(View.PlayerContainer);
             var leaderboardItemControllerTop = new LeaderboardItemController(leaderboardItemViewTop, leaderboardItemModel);
             Model.SetPlayerItemView(leaderboardItemView);
-            leaderboardItemControllerTop.Show();
+            _uniTasks.Add(leaderboardItemControllerTop.ShowAsync());
             _leaderboardItemControllers.Add(leaderboardItemControllerTop);
 
             return leaderboardItemView;

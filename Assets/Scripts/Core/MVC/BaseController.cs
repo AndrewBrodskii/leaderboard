@@ -7,7 +7,7 @@ namespace MVC
         protected readonly TView View;
         protected readonly TModel Model;
 
-        public BaseController(TView view, TModel model)
+        protected BaseController(TView view, TModel model)
         {
             View = view;
             Model = model;

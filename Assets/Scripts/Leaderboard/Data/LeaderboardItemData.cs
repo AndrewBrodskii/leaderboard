@@ -8,6 +8,6 @@ namespace Leaderboard.Data
         public string name;
         public int score;
         public string avatar;
-        public string type;
+        public PlayerType type;
     }
 }
