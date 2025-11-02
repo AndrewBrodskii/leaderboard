@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e100d28e2bbf49908508c51a71f1234d, type: 3}
+  m_Name: Leaderboard
+  m_EditorClassIdentifier: 
+  _bgColor: {r: 0.14509805, g: 0.18039216, b: 0.25882354, a: 0.56078434}
+  _firstPlaceColor: {r: 1, g: 0.8, b: 0.2784314, a: 1}
+  _secondPlaceColor: {r: 0.7529412, g: 0.7764706, b: 0.84705883, a: 1}
+  _thirdPlaceColor: {r: 0.8392157, g: 0.5411765, b: 0.28235295, a: 1}
+  _usualPlaceColor: {r: 0.53333336, g: 0.57254905, b: 0.627451, a: 1}
+  _badPlaceColor: {r: 0.7607843, g: 0.57254905, b: 0.627451, a: 1}
+  _leaderboardSize: 25
+  _badPlacesCount: 5

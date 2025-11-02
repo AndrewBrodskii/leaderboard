@@ -10,15 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Settings
+  m_Name: Data
   m_EditorClassIdentifier: 
-  m_GroupName: Settings
+  m_GroupName: Data
   m_Data:
     m_SerializedData: []
   m_GUID: 65afdaa13fdf84db78f6b7841afe1d50
   m_SerializeEntries:
   - m_GUID: 03bf3428d471d41e1afab8ccc39e6e01
     m_Address: LeaderboardSettings
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09711ce710b94d0fabc8dd15f544568b
+    m_Address: LeaderboardMockData
     m_ReadOnly: 0
     m_SerializedLabels:
     - default
