@@ -47,7 +47,6 @@ namespace Leaderboard.Item
         private async UniTask AnimateFillAsync(CancellationToken token)
         {
             await UniTask.WaitUntil(() => avatar.isActiveAndEnabled, cancellationToken: token);
-            Debug.Log($"Animating {placeText.text}");
             while (!token.IsCancellationRequested)
             {
                 avatar.fillAmount += Time.deltaTime * 0.5f;
